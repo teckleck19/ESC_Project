@@ -23,7 +23,7 @@ webpage.login(user4);
 user1.createRequest("a","chat");
 user2.createRequest("b","chat");
 user3.createRequest("c","call");
-user4.createRequest("a","call");
+user4.createRequest("c","call");
 
 // Create Agents
 let agent1 = new Agent(0001,"pw_A");
@@ -44,7 +44,7 @@ user3.sendRequest();
 user1.userEndConnection();
 console.log(user1.connection);
 user4.sendRequest();
-console.log(router.queuedUsers);
+//console.log(router.queuedUsers);
 console.log(".............");
 
 

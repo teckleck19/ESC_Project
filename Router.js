@@ -24,28 +24,33 @@ Router.prototype.routeRequest = function (user){
     let agent = null;
     // Checks agent availability
     if (this.agents.length === 0){
-        
+        console.log("Router: Sorry! There's no available agent that is online!");
         this.sendZeroAgent();
         
     }
     else{
-        console.log("Routing......");
+        
         for (let i=0; i<this.availableAgents.length; i++){
             
             if (this.availableAgents[i].task === user.request.what){
                 msg = this.sendAvailable();
                 agent = this.availableAgents[i];
+                console.log("Router: There's an available agent!");
             }
         }
         
         if (msg === ""){
-            console.log("Routing to queue");
+            //console.log("Routing to queue");
             //console.log(this.unAvailableAgents);
             for (let i=0; i<this.unAvailableAgents.length; i++){
                 if (this.unAvailableAgents[i].task === user.request.what){
+                    console.log("Router: Waiting for user's response to queue request.");
                     msg = this.sendQueue(user);
                 }
             }
+        }
+        if (msg === ""){
+            this.sendNoAgentForTask();
         }
     }
     
@@ -87,6 +92,10 @@ Router.prototype.sendQueue = function(user){
 Router.prototype.sendSuccessfullyQueued = function(){
     this.webpage.receiveSuccessfullyQueued();
 };
+
+Router.prototype.sendNoAgentForTask = function(){
+    this.webpage.receiveNoAgentForTask();
+};
 /**
  * queue user for next available agent
  * @param User
@@ -105,7 +114,7 @@ Router.prototype.queueUser = function(user){
  */
 Router.prototype.addAgentAvailable = function(agent){
     this.availableAgents.push(agent);
-    console.log("adding agents on standby for task");
+    console.log("adding agent with id " + agent.id +  " on standby for task " + agent.task);
     //console.log(this.availableAgents);
 }
 
@@ -116,7 +125,7 @@ Router.prototype.addAgentAvailable = function(agent){
  */
 Router.prototype.addAgentLogin = function(agent){
     this.agents.push(agent);
-    console.log("adding agents on standby for task");
+    console.log("adding agent to login-ed list");
     //console.log(this.availableAgents);
 }
 
@@ -151,9 +160,13 @@ Router.prototype.endConnection = function(connection){
             {return value !== connection;})
             connection.user.connection=null;
             connection.agent.connection=null;
-            console.log("Connection has ended");
+            console.log("Connection between user" + connection.user.id + " and agent" + connection.agent.id + " has ended");
         }
     }
+
+    this.availableAgents.push(connection.agent);
+    this.unAvailableAgents = this.unAvailableAgents.filter(function(value, index, arr)
+    { return value !== connection.agent;});
     
 
 }

@@ -24,17 +24,17 @@ Webpage.prototype.sendRequest = function(user){
 };
 
 Webpage.prototype.receiveZeroAgent = function(){
-    console.log("Sorry No Agent!");
+    console.log("Webpage: Sorry No Agent!");
 };
 
 Webpage.prototype.receiveAvailable = function(){
-    console.log("Pls wait for us to connect u to an agent!");
+    console.log("Webpage: Pls wait for us to connect u to an agent!");
     return "Create Connection";
 };
 
 Webpage.prototype.receiveQueue = function(user){
     let u = null;
-    console.log("webpage receiving queue");
+    //console.log("webpage receiving queue");
     for (let i = 0; i < this.allUsers.length; i++){
         if (this.allUsers[i].id===user.id){
             console.log("any?");
@@ -46,6 +46,11 @@ Webpage.prototype.receiveQueue = function(user){
 
 Webpage.prototype.receiveSuccessfullyQueued = function(){
     console.log("You are succesfully queued!");
+
+};
+
+Webpage.prototype.receiveNoAgentForTask = function(){
+    console.log("Sorry! There's no agent for ypur specific request!");
 
 };
 
