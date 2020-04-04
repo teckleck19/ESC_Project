@@ -2,6 +2,7 @@ let Router = require("./Router.js");
 let Customer = require("./Customer.js");
 // Load the SDK
 let RainbowSDK = require("rainbow-node-sdk");
+var router = null;
 
 // Define your configuration
 let options = {
@@ -24,7 +25,7 @@ let options = {
     },
     // Logs options
     "logs": {
-        "enableConsoleLogs": false,
+        "enableConsoleLogs": true,
         "enableFileLogs": false,
         "color": true,
         "level": 'debug',
@@ -97,9 +98,11 @@ let rainbowSDK = new RainbowSDK(options);
 
 // Start the SDK
 rainbowSDK.start().then(()=>{
-
+    
+    console.log("----Starting----");
+    router = new Router(rainbowSDK);
     /* // Instantiate the router and webpage
-    let router = new Router();
+    
     let webpage = router.webpage;
 
     // Create Users
@@ -161,7 +164,7 @@ rainbowSDK.start().then(()=>{
         // Do something in case of error
         console.log("Guest already exists");
     }); */
-    console.log("----Starting----");
+    
    
     
     
@@ -189,8 +192,8 @@ rainbowSDK.events.on("rainbow_onready", () => {
         }
     }  */
     
-    let a = rainbowSDK.contacts.getAll();
-    console.log(a);
+    //let a = rainbowSDK.contacts.getAll();
+    //console.log(a);
     //console.log(router.unAvailableAgents);
     //console.log(router.availableAgents[0].name);
     //console.log(router.availableAgents[1].name);
@@ -200,19 +203,56 @@ rainbowSDK.events.on("rainbow_onready", () => {
     router.customers[1].createRequest("Task B","call");
     router.customers[1].sendRequest(); */
     
-    
+    // TODO ask "debug: vincent01 - XMPP/HNDL/CONV - (_onMessageReceived) with no message text, so ignore it! hasATextMessage :  false"
+    rainbowSDK.im.sendMessageToJid("Set to Busy","007b8ad5894143b89cb9e834de1695ba@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
 }); 
 
-/* rainbowSDK.events.on("rainbow_onmessagereceived", (message) => {
-    // Check if the message is not from you
-    if(!message.fromJid.includes(rainbowSDK.connectedUser.jid_im)) {
-        // Check that the message is from a user
-        if( message.type === "chat") {
-            // Answer to this user
-            Router.routeRequest
-            // Do something with the message sent
-            
+/* rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
+    
+    //TODO: Check if the message comes from an agent
+
+    // Check if the message comes from admin
+    
+    
+}); */
+
+rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
+    
+    console.log("---" + contact.name.value + " is changing presence to " + contact.presence );
+    //Check if it is an agent
+    if (contact.tags[0]==="Agent"){
+        
+        // if it turns to online
+        if (contact.presence==="online"){
+            //check if it just log-ed in or come back from away
+            for(let i=0; i<router.unAvailableAgent.length; i++){
+
+                //if from away
+                if (contact.jid === router.unAvailableAgent[i].id){
+                    router.updateAgentStatus(contact);
+                    router.routeAgent(contact);
+                    break;
+                }
+            }
+            // if just log-ed in
+            router.addAgentLogin(contact);
+            router.routeAgent(contact);
+        }
+
+        // if it turns to away
+        if (contact.presence==="away"){
+            for(let i=0; i<router.availableAgent.length; i++){
+
+                //if from away
+                if (contact.jid === router.availableAgent[i].id){
+                    router.updateAgentStatus(contact);
+                    break;
+                }
+            }
         }
     }
+
+    
+    
 });
- */
+    

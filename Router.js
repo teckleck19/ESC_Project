@@ -2,7 +2,6 @@ let Webpage = require("./Webpage.js");
 let Customer = require("./Customer.js");
 let Connection = require("./Connection");
 let Agent = require("./Agent.js");
-let Rbwsdk = require("rainbow-node-sdk");
 
 
 //constuctor

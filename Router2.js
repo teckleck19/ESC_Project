@@ -9,9 +9,7 @@ let Rbwsdk = require("rainbow-node-sdk");
 function Router2(Rainbow){
     
     this.rbwsdk = Rainbow;
-    this.customers = this.createCustomerList();
     this.agents = this.createAgentList();
-    
     this.availableAgents = this.createAvailableAgentList();
     this.unAvailableAgents = this.createUnavailableAgentList();
     this.queuedCustomers = new Array();
@@ -24,16 +22,15 @@ function Router2(Rainbow){
  * @returns void or agent
  * @throws what kind of exception does this method throw
 */
-Router.prototype.routeRequest = function (request){
+Router2.prototype.routeRequest = function (customer){
     
-;
     let notfound = true;
-    let wantToQueue = false;
-    let agent = null;
+    let num = null;
+
     // Checks agent availability
     if (this.availableAgents.length === 0 && this.unAvailableAgents.length === 0){
         console.log("Router: Sorry! There's no available agent that is online!");
-        return "No Agent At Work"   
+        return "No Agent At Work";   
     }
     
     else{
@@ -41,9 +38,9 @@ Router.prototype.routeRequest = function (request){
         var temp =1000;
         for (let i=0; i<this.availableAgents.length; i++){
             console.log(this.availableAgents[i].connections.length);
-            if (this.availableAgents[i].task === request.what && this.availableAgents[i].numOfConnections < temp){
+            if (this.availableAgents[i].task === customer.request.what && this.availableAgents[i].numOfConnections < temp){
                 temp = this.availableAgents[i].numOfConnections;
-                agent = this.availableAgents[i];
+                num = i;
                 this.availableAgents = this.availableAgents.filter(function(value, index, arr)
                 { return value !== agent;});
                 this.availableAgents.push(agent);
@@ -57,15 +54,10 @@ Router.prototype.routeRequest = function (request){
             //console.log("Routing to queue");
             //console.log(this.unAvailableAgents);
             for (let i=0; i<this.unAvailableAgents.length; i++){
-                if (this.unAvailableAgents[i].task === request.what){
-                    console.log("Router: Waiting for customer's response to queue request.");
-                    wantToQueue = this.sendQueue(customer);
-                    if (wantToQueue){
-                        notfound = false;
-                    }
-                    else{
-                        return;
-                    }
+                if (this.unAvailableAgents[i].task === customer.request.what){
+                    console.log("Ask: Queue?");
+                    return "Ask: Queue?";
+                
                 }
             }
         }
@@ -74,111 +66,100 @@ Router.prototype.routeRequest = function (request){
             return "No Agent For Your Specific Task";
         }
 
-        if (wantToQueue){
-            return "Pls Queue"
+        if (agent!==null){
+
+            this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
+            
+            if (this.availableAgents[num].numOfConnections >= 3){
+                this.availableAgents[num].status = "dnd";
+                //TODO: set agents presence to dnd
+                rbwsdk.im.sendMessageToJid("Set to dnd",this.availableAgents[num].id);
+            }
+            
+            return this.availableAgents[num].id;
         }
 
-        if (agent!==null)return agent.id;
+        return "ERROR";
 
     }
 };
 
-
-
 /**
- * 3 methods of sending routing result to webpage
- */
-Router.prototype.sendZeroAgent = function(){
-    return this.webpage.receiveZeroAgent();
-};
-
-Router.prototype.sendAvailable = function(){
-    return this.webpage.receiveAvailable();
-};
-
-Router.prototype.sendQueue = function(customer){
-    return this.webpage.receiveQueue(customer);
-};
-
-Router.prototype.sendSuccessfullyQueued = function(){
-    this.webpage.receiveSuccessfullyQueued();
-};
-
-Router.prototype.sendNoAgentForTask = function(){
-    this.webpage.receiveNoAgentForTask();
-};
-/**
- * queue customer for next available agent
+ * queue customer: put customer into queue
  * @param Customer
  * @returns void
  */
-Router.prototype.queueCustomer = function(customer){
+Router2.prototype.queueCustomer = function(customer){
     this.queuedCustomers.push(customer);
-    this.sendSuccessfullyQueued();
 };
 
-
 /**
- * add agents who are ready to give response
- * @param  agent
- * @returns void
+ * route queued customer for available agent (from unavailable to available)
+ * @param contact
+ * @returns agent, customer
  */
-Router.prototype.addAgentAvailable = function(agent){
-    this.availableAgents.push(agent);
-    console.log("adding agent with id " + agent.id +  " on standby for task " + agent.task);
-    //console.log(this.availableAgents);
-}
+Router2.prototype.routeAgent = function(contact){
 
-/**
- * add agents who login-ed
- * @param  agent
- * @returns void
- */
-Router.prototype.addAgentLogin = function(agent){
-    this.agents.push(agent);
-    console.log("adding agent to login-ed list");
-    //console.log(this.availableAgents);
-}
-
-
-
-
-/**
- * create connection between agent and customer, append new connection to connections array
- * @param customer, agent
- * @returns void
- */
-Router.prototype.createConnection = function(customer, agent){
-    let connection = new Connection(customer,agent,this.rbwsdk);
-    customer.connection = connection;
-    agent.connections.push(connection);
     
-    // put agent in connection from available to unavailable if num of customers >= 3
-    if (agent.connections.length>=3){
-        this.unAvailableAgents.push(agent);
-        this.availableAgents = this.availableAgents.filter(function(value, index, arr)
-        { return value !== agent;}
-        );
-    }
-    else{
-        this.connections.push(connection);
-        let a = new Array();
-        
-        //console.log(this.availableAgents);
-        a.push(customer.contact.id);
-        try{
-            this.rbwsdk.contacts.joinContacts(agent.contact,a);
+    var agent = null;
+    for(let i=0; i<this.availableAgents; i++){
+        if (contact.jid === this.availableAgents[i].id){
+            agent = this.availableAgents[i].id;
         }
-        catch(err){};
-        console.log("Connection created between customer" + customer.name + "----" + "agent" + agent.name);
+    }
+    for(let i=0; i<this.queueCustomer; i++){
+        if (this.queuedCustomer[i].request.what===agent.task){
+            
+
+            //TODO: send to rahuls server
+            return agent.id + " " + this.queuedCustomer[i].id;
+        }
+    }
+}
+
+Router2.prototype.updateAgentStatus = function(contact){
+
+
+    //from away (unavailable) to online (available)
+    if (contact.presence === "online"){
+        for(let i=0; i<this.agents.length; i++){
+            if(this.agents[i].id===contact.jid){
+                this.agents[i]=new Agent(contact);
+            }
+        }
+        for(let i=0; i<this.unAvailableAgents.length; i++){
+            if(this.unAvailableAgents[i].id===contact.jid){
+                this.unAvailableAgents[i]=new Agent(contact);
+                this.availableAgents.push(this.unAvailableAgents[i]);
+                this.unAvailableAgents = this.unAvailableAgents.filter(function(value, index, arr)
+                { return value !== this.unAvailableAgents[i];}
+                );
+            }
+        }
     }
 
-    
-    
-    
-};
+    // from online to away
+    else if (contact.presence === "away"){
+        for(let i=0; i<this.agents.length; i++){
+            if(this.agents[i].id===contact.jid){
+                this.agents[i]=new Agent(contact);
+            }
+        }
+        for(let i=0; i<this.availableAgents.length; i++){
+            if(this.availableAgents[i].id===contact.jid){
+                this.availableAgents[i]=new Agent(contact);
+                this.unAvailableAgents.push(this.availableAgents[i]);
+                this.availableAgents = this.availableAgents.filter(function(value, index, arr)
+                { return value !== this.availableAgents[i];}
+                );
+            }
+        }
+    }
+}
 
-Router.prototype.endConnection = function(connection){
+
+// TODO
+Router2.prototype.endConnection = function(contact){
     
     for(let i = 0; i<this.connections.length; i++){
         if (this.connections[i]===connection){
@@ -201,7 +182,7 @@ Router.prototype.endConnection = function(connection){
 
 }
 
-Router.prototype.receiveHangUp = function(CorA){
+Router2.prototype.receiveHangUp = function(CorA){
 
     this.endConnection(CorA.connection);
 
@@ -210,7 +191,7 @@ Router.prototype.receiveHangUp = function(CorA){
 
 
 //Create List of Agents
-Router.prototype.createAgentList = function(){
+Router2.prototype.createAgentList = function(){
     var A = new Array();
     var contacts = this.rbwsdk.contacts.getAll();
     for(let i=0; i<contacts.length; i++){
@@ -224,7 +205,7 @@ Router.prototype.createAgentList = function(){
     return A;
 }
 
-Router.prototype.createCustomerList = function(){
+Router2.prototype.createCustomerList = function(){
     var A = new Array();
     var contacts = this.rbwsdk.contacts.getAll();
     
@@ -239,7 +220,7 @@ Router.prototype.createCustomerList = function(){
     return A;
 }
 
-Router.prototype.createAvailableAgentList = function(){
+Router2.prototype.createAvailableAgentList = function(){
     let A = new Array();
     for(let i=0; i<this.agents.length; i++){
         if(this.agents[i].status==="online"){
@@ -249,7 +230,7 @@ Router.prototype.createAvailableAgentList = function(){
     return A;
 }
 
-Router.prototype.createUnavailableAgentList = function(){
+Router2.prototype.createUnavailableAgentList = function(){
     let A = new Array();
     for(let i=0; i<this.agents.length; i++){
         if(this.agents[i].status==="busy"||this.agents[i].status==="away"){
@@ -259,6 +240,11 @@ Router.prototype.createUnavailableAgentList = function(){
     return A;
 }
 
+Router.prototype.addAgentLogin = function(contact){
+    this.availableAgents.push(new Agent(contact));
+    console.log("adding agent with id " + agent.id +  " on standby for task " + agent.task);
+    //console.log(this.availableAgents);
+}
 
 
 module.exports = Router2;

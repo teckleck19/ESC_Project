@@ -115,34 +115,19 @@ rainbowSDK.start().then(()=>{
 
 rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
     
-    // Check if the message comes from a user
-    if(message.type === "chat") {
+    // Check if the message comes from admin
+    if(message.fromJid === "5e0d870daebd4ad7bff9a9b34fd53bfe@sandbox-all-in-one-rbx-prod-1.rainbow.sbg") {
         // Do something with the message       
-        console.log(message.content);
-    }
-});
-
-rainbowSDK.events.on('rainbow_oncontactpresencechanged', (contact) => {
-    
-    // Check if it's the admin
-    if(contact.name.value === "Teck Leck Ma") {
-              
-        console.log("It is just the admin! - dont do anything");
-    }
-    
-    else{
-        //if it's the customer
-        if(contact.tags[0]==="Customer") {
-            
+        if (message.content==="Set to Busy"){
+            rainbowSDK.presenceService.setPresenceTo("dnd");
         }
     }
 });
 
-
 rainbowSDK.events.on('rainbow_oncontactpresencechanged', (contact) => {
     
     // Check if it's the admin
-    if(contact.name.value === "Teck Leck Ma") {
+    if(contact.jid === "5e0d870daebd4ad7bff9a9b34fd53bfe@sandbox-all-in-one-rbx-prod-1.rainbow.sbg") {
               
         console.log("It is just the admin! - dont do anything");
     }

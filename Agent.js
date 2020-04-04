@@ -8,7 +8,7 @@ function Agent(contact){
     this.id = this.contact.jid;
     this.status = this.contact.presence;
     this.task = this.contact.tags[1];
-    this.numOfConnections = this.contact.conversation.length;
+    this.numOfConnections = 0;
 
 }
 
