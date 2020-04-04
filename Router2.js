@@ -6,9 +6,9 @@ let Rbwsdk = require("rainbow-node-sdk");
 
 
 //constuctor
-function Router(Rainbow){
+function Router2(Rainbow){
+    
     this.rbwsdk = Rainbow;
-    this.webpage = new Webpage(this);
     this.customers = this.createCustomerList();
     this.agents = this.createAgentList();
     
@@ -24,16 +24,16 @@ function Router(Rainbow){
  * @returns void or agent
  * @throws what kind of exception does this method throw
 */
-Router.prototype.routeRequest = function (customer){
+Router.prototype.routeRequest = function (request){
     
-
-    var msg = "";
+;
+    let notfound = true;
+    let wantToQueue = false;
     let agent = null;
     // Checks agent availability
     if (this.availableAgents.length === 0 && this.unAvailableAgents.length === 0){
         console.log("Router: Sorry! There's no available agent that is online!");
-        this.sendZeroAgent();
-        
+        return "No Agent At Work"   
     }
     
     else{
@@ -41,49 +41,46 @@ Router.prototype.routeRequest = function (customer){
         var temp =1000;
         for (let i=0; i<this.availableAgents.length; i++){
             console.log(this.availableAgents[i].connections.length);
-            if (this.availableAgents[i].task === customer.request.what && this.availableAgents[i].connections.length < temp){
-                temp = this.availableAgents[i].connections.length;
-                msg = this.sendAvailable();
+            if (this.availableAgents[i].task === request.what && this.availableAgents[i].numOfConnections < temp){
+                temp = this.availableAgents[i].numOfConnections;
                 agent = this.availableAgents[i];
                 this.availableAgents = this.availableAgents.filter(function(value, index, arr)
                 { return value !== agent;});
                 this.availableAgents.push(agent);
-                console.log("Router: There's an available agent!");
+                notfound = false;
+
+            
             }
         }
         
-        if (msg === ""){
+        if (notfound){
             //console.log("Routing to queue");
             //console.log(this.unAvailableAgents);
             for (let i=0; i<this.unAvailableAgents.length; i++){
-                if (this.unAvailableAgents[i].task === customer.request.what){
+                if (this.unAvailableAgents[i].task === request.what){
                     console.log("Router: Waiting for customer's response to queue request.");
-                    msg = this.sendQueue(customer);
+                    wantToQueue = this.sendQueue(customer);
+                    if (wantToQueue){
+                        notfound = false;
+                    }
+                    else{
+                        return;
+                    }
                 }
             }
         }
-        if (msg === ""){
-            this.sendNoAgentForTask();
+        
+        if (notfound){
+            return "No Agent For Your Specific Task";
         }
-    }
-    
-    if (msg===""){
-        return;
-    }
 
-    else if (msg==="Cancel"){
-        console.log("Request is cancelled!")
-    }
+        if (wantToQueue){
+            return "Pls Queue"
+        }
 
-    else if (msg==="Queue"){
-        this.queueCustomer(customer);
-    }
+        if (agent!==null)return agent.id;
 
-    else if (msg==="Create Connection" & agent!=null){
-        //this.notifyAgent(customer.request);
-        this.createConnection(customer,agent);
     }
-
 };
 
 
@@ -264,4 +261,4 @@ Router.prototype.createUnavailableAgentList = function(){
 
 
 
-module.exports = Router;
+module.exports = Router2;

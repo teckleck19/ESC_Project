@@ -1,5 +1,5 @@
 let Router = require("./Router");
-let User = require("./User");
+let User = require("./Customer");
 let Agent = require("./Agent");
 const prompt = require('prompt-sync')({sigint: true});
 
@@ -12,18 +12,21 @@ let user1 = new User(0001,"pw01",webpage);
 let user2 = new User(0002,"pw02",webpage);
 let user3 = new User(0003,"pw03",webpage);
 let user4 = new User(0004,"pw04",webpage);
+let user5 = new User(0005,"pw05",webpage);
 
 // Users login
 webpage.login(user1);
 webpage.login(user2);
 webpage.login(user3);
 webpage.login(user4);
+webpage.login(user5);
 
 // Create Users' Requests
 user1.createRequest("a","chat");
 user2.createRequest("b","chat");
 user3.createRequest("c","call");
 user4.createRequest("c","call");
+user5.createRequest("a","call");
 
 // Create Agents
 let agent1 = new Agent(0001,"pw_A");
@@ -41,11 +44,12 @@ agent3.standbyForTask("c");
 user1.sendRequest();
 user2.sendRequest();
 user3.sendRequest();
-user1.userEndConnection();
 console.log(user1.connection);
+user1.userEndConnection();
+console.log(user1.connection,agent1.connection);
 user4.sendRequest();
 //console.log(router.queuedUsers);
-console.log(".............");
+user5.sendRequest();
 
 
 

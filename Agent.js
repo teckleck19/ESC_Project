@@ -1,13 +1,14 @@
 let Router = require("./Router.js");
 let A = Agent.prototype;
 
-function Agent(id, passwd){
+function Agent(contact){
     
-    this.id = id;
-    this.passwd = passwd;
-    this.router = null;
-    this.task = null;
-    this.connection = null;
+    this.contact=contact;
+    this.name = this.contact.name.value;
+    this.id = this.contact.jid;
+    this.status = this.contact.presence;
+    this.task = this.contact.tags[1];
+    this.numOfConnections = this.contact.conversation.length;
 
 }
 
@@ -20,5 +21,6 @@ A.standbyForTask = function(task){
     this.task = task;
     this.router.addAgentAvailable(this);
 }
+
 
 module.exports = Agent;
