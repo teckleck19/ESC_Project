@@ -10,8 +10,8 @@ let options = {
         "locallistenningport": "4000" // Local port where the events must be forwarded from S2S Callback Web server.
     },
     "credentials": {
-        "login": "agent1@c03g14company.com", // To replace by your developer credendials
-        "password": 'Agent1password!' // To replace by your developer credentials
+        "login": "agent5@c03g14company.com", // To replace by your developer credendials
+        "password": 'Agent5password!' // To replace by your developer credentials
     },
     // Application identifier
     "application": {
@@ -113,14 +113,10 @@ rainbowSDK.start().then(()=>{
 
 });
 
-rainbowSDK.events.on('rainbow_onstarted', () => {
-    
-});
-
 rainbowSDK.events.on('rainbow_onready', () => {
     // go offline when stop
     rainbowSDK.presence.setPresenceTo("online");
-    console.log("Agent 1 is online");
+    console.log("Agent 5 is online");
 });
 
 rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
@@ -142,22 +138,3 @@ rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
     }
     console.log("msg from admin!!");
 });
-
-rainbowSDK.events.on('rainbow_oncontactpresencechanged', (contact) => {
-    
-    
-    // Check if it's the admin
-    if(contact.jid === "5e0d870daebd4ad7bff9a9b34fd53bfe@sandbox-all-in-one-rbx-prod-1.rainbow.sbg") {
-            
-        console.log("It is just the admin! - dont do anything");
-    }
-    
-    
-});
-
-rainbowSDK.events.on('rainbow_onstopped', () => {
-    
-});
-
-
-

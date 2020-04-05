@@ -12,6 +12,7 @@ function Router2(Rainbow){
     this.agents = this.createAgentList();
     this.availableAgents = this.createAvailableAgentList();
     this.unAvailableAgents = this.createUnavailableAgentList();
+    this.offlineAgents = this.createOfflineAgentList();
     this.queuedCustomers = new Array();
     this.connections = new Array();
 }
@@ -41,9 +42,9 @@ Router2.prototype.routeRequest = function (customer){
             if (this.availableAgents[i].task === customer.request.what && this.availableAgents[i].numOfConnections < temp){
                 temp = this.availableAgents[i].numOfConnections;
                 num = i;
-                this.availableAgents = this.availableAgents.filter(function(value, index, arr)
-                { return value !== agent;});
-                this.availableAgents.push(agent);
+                // this.availableAgents = this.availableAgents.filter(function(value, index, arr)
+                // { return value !== agent;});
+                // this.availableAgents.push(agent);
                 notfound = false;
 
             
@@ -129,11 +130,9 @@ Router2.prototype.updateAgentStatus = function(contact){
         }
         for(let i=0; i<this.unAvailableAgents.length; i++){
             if(this.unAvailableAgents[i].id===contact.jid){
-                this.unAvailableAgents[i]=new Agent(contact);
-                this.availableAgents.push(this.unAvailableAgents[i]);
-                this.unAvailableAgents = this.unAvailableAgents.filter(function(value, index, arr)
-                { return value !== this.unAvailableAgents[i];}
-                );
+                this.unAvailableAgents.splice(i,i+1)
+                this.availableAgents.push(new Agent(contact));
+                
             }
         }
     }
@@ -144,17 +143,37 @@ Router2.prototype.updateAgentStatus = function(contact){
             if(this.agents[i].id===contact.jid){
                 this.agents[i]=new Agent(contact);
             }
+            
         }
+        
         for(let i=0; i<this.availableAgents.length; i++){
             if(this.availableAgents[i].id===contact.jid){
-                this.availableAgents[i]=new Agent(contact);
-                this.unAvailableAgents.push(this.availableAgents[i]);
-                this.availableAgents = this.availableAgents.filter(function(value, index, arr)
-                { return value !== this.availableAgents[i];}
-                );
+                
+                // this.availableAgents = this.availableAgents.filter(function(value, index, arr)
+                // { return value !== this.availableAgents[i]});
+                this.availableAgents.splice(i,i+1);
+                
+                this.unAvailableAgents.push(new Agent(contact));
+                
             }
         }
+        
     }
+}
+
+
+Router2.prototype.addAgentLogin = function(contact){
+    
+    for(let i = 0; i<this.offlineAgents.length;i++){
+        if (contact.jid===this.offlineAgents[i].id){
+            
+            this.offlineAgents.splice(i,i+1);
+            this.availableAgents.push(new Agent(contact));
+        }
+    }
+    
+    console.log("adding agent with id " + agent.id +  " on standby for task " + agent.task);
+    //console.log(this.availableAgents);
 }
 
 
@@ -193,9 +212,10 @@ Router2.prototype.receiveHangUp = function(CorA){
 //Create List of Agents
 Router2.prototype.createAgentList = function(){
     var A = new Array();
+    console.log("------------Contacts------------");
     var contacts = this.rbwsdk.contacts.getAll();
     for(let i=0; i<contacts.length; i++){
-        console.log(contacts[i].name.value);
+        console.log(contacts[i].name.value + "---" + contacts[i].presence);
         if(contacts[i].name.value!=="Teck Leck Ma"){
             if(contacts[i].tags[0]==="Agent"){
                 A.push(new Agent(contacts[i]));
@@ -240,11 +260,17 @@ Router2.prototype.createUnavailableAgentList = function(){
     return A;
 }
 
-Router.prototype.addAgentLogin = function(contact){
-    this.availableAgents.push(new Agent(contact));
-    console.log("adding agent with id " + agent.id +  " on standby for task " + agent.task);
-    //console.log(this.availableAgents);
+Router2.prototype.createOfflineAgentList = function(){
+    let A = new Array();
+    for(let i=0; i<this.agents.length; i++){
+        if(this.agents[i].status==="offline"){
+            A.push(this.agents[i]);
+        }
+    }
+    return A;
 }
+
+
 
 
 module.exports = Router2;

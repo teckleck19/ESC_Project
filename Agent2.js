@@ -109,15 +109,32 @@ rainbowSDK.start().then(()=>{
 
     // sending requests
     user1.sendRequest(); */
-    console.log("Agent 2 is online");
+    
 
+});
+
+rainbowSDK.events.on('rainbow_onready', () => {
+    // go offline when stop
+    rainbowSDK.presence.setPresenceTo("online");
+    console.log("Agent 2 is online");
 });
 
 rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
     
-    // Check if the message comes from a user
-    if(message.type === "chat") {
-        // Do something with the message       
+    if (message.type==="chat"){
+        // Check if the message comes from admin
+        if(message.fromJid === "5e0d870daebd4ad7bff9a9b34fd53bfe@sandbox-all-in-one-rbx-prod-1.rainbow.sbg") {
+            // Do something with the message       
+            if (message.content==="Set to Busy"){
+                //rainbowSDK.presenceService.setPresenceTo("dnd");
+                //console.log(rainbowSDK.presenceService.getUserConnectedPresence());
+                rainbowSDK.presence.setPresenceTo("dnd");
+            }
+
+            
+        }
+        console.log("msg from " + message.fromJid);
         console.log(message.content);
     }
+    console.log("msg from admin!!");
 });
