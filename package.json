@@ -1,0 +1,17 @@
+{
+  "name": "rainbow",
+  "version": "1.0.0",
+  "description": "esc-project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async-mutex": "^0.1.4",
+    "prompt": "^1.0.0",
+    "prompt-sync": "^4.2.0",
+    "rainbow-node-sdk": "^1.69.0"
+  }
+}

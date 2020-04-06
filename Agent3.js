@@ -119,7 +119,9 @@ rainbowSDK.events.on('rainbow_onready', () => {
                     //console.log(rainbowSDK.presenceService.getUserConnectedPresence());
                     rainbowSDK.presence.setPresenceTo("dnd");
                 }
-                console.log("msg from admin!!");
+                if (message.content==="Set to Online"){
+                    rainbowSDK.presence.setPresenceTo("online");
+                }                console.log("msg from admin!!");
                 console.log(message.content);
                 
             }
