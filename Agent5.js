@@ -20,11 +20,11 @@ let options = {
     },
     // Logs options
     "logs": {
-        "enableConsoleLogs": true,
+        "enableConsoleLogs": false,
         "enableFileLogs": false,
         "color": true,
         "level": 'debug',
-        "customLabel": "vincent01",
+        "customLabel": "agent5",
         "system-dev": {
             "internals": false,
             "http": false,
@@ -91,50 +91,56 @@ let rainbowSDK = new RainbowSDK(options);
 
 rainbowSDK.start().then(()=>{
 
-    /* // Instantiate the router and webpage
-    let router = new Router();
-    let webpage = router.webpage;
+});
 
-    // Create Users
-    let user1 = new User(0001,"pw01",webpage);
-    let user2 = new User(0002,"pw02",webpage);
-    let user3 = new User(0003,"pw03",webpage);
-    let user4 = new User(0004,"pw04",webpage);
+rainbowSDK.events.on('rainbow_onstarted', () => {
+    console.log("started");
+});
 
-    // Create User Requests
-    user1.createRequest("a","chat");
-    user2.createRequest("b","chat");
-    user3.createRequest("c","call");
-    user4.createRequest("a","call");
-
-    // sending requests
-    user1.sendRequest(); */
+rainbowSDK.events.on("rainbow_onconnected",()=>{
     
-
+    console.log("connected");
+    
 });
 
 rainbowSDK.events.on('rainbow_onready', () => {
-    // go offline when stop
-    rainbowSDK.presence.setPresenceTo("online");
+        
+        
     console.log("Agent 5 is online");
-});
 
-rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
+    rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
     
-    if (message.type==="chat"){
-        // Check if the message comes from admin
-        if(message.fromJid === "5e0d870daebd4ad7bff9a9b34fd53bfe@sandbox-all-in-one-rbx-prod-1.rainbow.sbg") {
-            // Do something with the message       
-            if (message.content==="Set to Busy"){
-                //rainbowSDK.presenceService.setPresenceTo("dnd");
-                //console.log(rainbowSDK.presenceService.getUserConnectedPresence());
-                rainbowSDK.presence.setPresenceTo("dnd");
+        if (message.type==="chat"){
+            // Check if the message comes from admin
+            if(message.fromJid === "5e0d870daebd4ad7bff9a9b34fd53bfe@sandbox-all-in-one-rbx-prod-1.rainbow.sbg") {
+                // Do something with the message       
+                if (message.content==="Set to Busy"){
+                    //rainbowSDK.presenceService.setPresenceTo("dnd");
+                    //console.log(rainbowSDK.presenceService.getUserConnectedPresence());
+                    rainbowSDK.presence.setPresenceTo("dnd");
+                }
+                if (message.content==="Set to Online"){
+                    rainbowSDK.presence.setPresenceTo("online");
+                }
+                console.log("msg from admin!!");
+                console.log(message.content);
+                
             }
-
             
         }
-        console.log("msg from " + message.fromJid);
-        console.log(message.content);
-    }
-    console.log("msg from admin!!");
+        
+    });
+    
+    rainbowSDK.events.on('rainbow_oncontactpresencechanged', (contact) => {
+        
+        
+    });
+
+
+});
+
+
+
+rainbowSDK.events.on('rainbow_onstopped', () => {
+    
 });

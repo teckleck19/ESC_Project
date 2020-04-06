@@ -62,6 +62,7 @@ Router2.prototype.routeRequest = function (customer){
             for (let i=0; i<this.unAvailableAgents.length; i++){
                 if (this.unAvailableAgents[i].task === customer.request.what){
                     console.log("Ask: Queue?");
+                    this.queueCustomer(customer);
                     return "Ask: Queue?";
                 
                 }
@@ -69,6 +70,7 @@ Router2.prototype.routeRequest = function (customer){
         }
         
         if (notfound){
+            console.log("Agents that are busy or away, none of them are attending to your specific task");
             return "No Agent For Your Specific Task";
         }
 
@@ -84,8 +86,8 @@ Router2.prototype.routeRequest = function (customer){
                 this.unAvailableAgents.push(this.availableAgents[num]);
                 this.availableAgents.splice(num,1);
             }
-            
-            return agent.id;
+            console.log("Found An Agent");
+            return this.availableAgents[num].id;
         }
 
         console.log("error");
@@ -94,14 +96,6 @@ Router2.prototype.routeRequest = function (customer){
     }
 };
 
-/**
- * queue customer: put customer into queue
- * @param Customer
- * @returns void
- */
-Router2.prototype.queueCustomer = function(customer){
-    this.queuedCustomers.push(customer);
-};
 
 /**
  * route queued customer for available agent (from unavailable to available)
@@ -129,7 +123,25 @@ Router2.prototype.routeAgent = function(contact){
 
 
 
+/**
+ * queue customer: put customer into queue
+ * @param Customer
+ * @returns void
+ */
+Router2.prototype.queueCustomer = function(customer){
+    this.queuedCustomers.push(customer);
+};
 
+Router2.prototype.kickCustomer = function(customer_jid){
+    
+    for (let i=0;i<this.queuedCustomers.length;i++){
+
+        if (customer_jid==this.queuedCustomers[i].id){
+            this.queuedCustomers.splice(i,1);
+            console.log("kick customer with jid: " + customer_jid);
+        }
+    }
+};
 
 
 
@@ -370,12 +382,12 @@ Router2.prototype.createCustomerRequest = function(jid, task, type){
 
         }
     }
-    if (customer===null){
+    if (customerNum===null){
         return "You are not signed up (not in admin's contacts)"
     }
     else{
-        this.customers[num].createRequest(task, type);
-        this.customers[num].sendRequest();
+        this.customers[customerNum].createRequest(task, type);
+        return this.customers[customerNum].sendRequest();
     }
 }
 

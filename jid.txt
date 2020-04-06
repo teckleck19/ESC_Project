@@ -1,0 +1,37 @@
+--------------
+Customers JID
+--------------
+Customer 001---1121e8d678d04685a4e782d8bcadbbe4@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 002---39e4211276844febaee596ae90f4e4f8@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 003---c5d14d10e4b14d08b311b9ead9c355e2@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 004---766845f8f7c84aac8f1a3ea977bd38f0@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 005---597f8df634cb40409842017027a9005b@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 006---629b04aa014744b99e43f30ab74b3b10@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 007---920103fd4c25464e9a576e3ba50b28c5@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 008---9dcd0d204e5c4e1bad0f86ebe37a3992@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 009---2998199cfaf9442085c58343cad2e4d0@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Customer 010---15eaeeb484b84efba9f94033ff783f02@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+
+
+--------------
+Agents JID
+--------------
+Agent 001---007b8ad5894143b89cb9e834de1695ba@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Agent 002---a140a72fcb9940139d9181f12e3c1cf0@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Agent 003---eb3af02639da4a47a8dd41913ab43846@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Agent 004---e9d30029adf5440da83011fde1c6dfc7@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+Agent 005---2873ba1eb9944572a07586840a979691@sandbox-all-in-one-rbx-prod-1.rainbow.sbg
+
+Agent web-sandbox credentials:
+X = [1,6]
+username: AgentX@c03g14company.com
+password: AgentXpassword!
+
+------------------
+Admin (Teck Leck)
+------------------
+Admin web-sandbox login credentials:
+username: codmtl19@gmail.com
+password: cH{Kg=OzVy"9
+
+Admins JID : 5e0d870daebd4ad7bff9a9b34fd53bfe@sandbox-all-in-one-rbx-prod-1.rainbow.sbg

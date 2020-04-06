@@ -20,7 +20,7 @@ Webpage.prototype.logout = function(customer){
 };
 
 Webpage.prototype.sendRequest = function(customer){
-    this.router.routeRequest(customer);
+    return this.router.routeRequest(customer);
 };
 
 Webpage.prototype.receiveZeroAgent = function(){

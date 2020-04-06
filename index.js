@@ -1,6 +1,14 @@
 const express = require('express')
 const app = express()
 const port = 3000 //ipadreess:port/
+var startTimeout = function(timeout, i){
+    setTimeout(function() {
+        myAsyncFunc(i).then(function(data){
+            console.log(data);
+        })
+    }, timeout);
+}
+
 
 
 
@@ -256,8 +264,14 @@ rainbowSDK.events.on("rainbow_onready", () => {
     
 
     
-    console.log(router.availableAgents);
-    console.log(router.unAvailableAgents);
+    //console.log(router.availableAgents);
+    //console.log(router.unAvailableAgents);
+    /* for (let i=0; i<router.customers.length;i++){
+        console.log(router.customers[i].name + "---" + router.customers[i].id);
+    } */
+    for (let i=0; i<router.agents.length;i++){
+        console.log(router.agents[i].name + "---" + router.agents[i].id);
+    }
 
 
 });
@@ -359,20 +373,31 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
     
     
 }); */
+app.get("/disconnect",(req,res)=>{
+    let djid = req.query["djid"];
+    let daid = req.query["daid"];
+    console.log("xxxxxxx");
+    router.kickCustomer(djid);
+    res.send("DISCONNECTED");
+});
 app.get('/', (req, res)=> {
     let task = req.query["task"]; //TASK A OR B OR C OR D
     let type= req.query["type"];
     let jid = req.query["jid"]; // text OR call By defaul lets make it text
     
+    task = "Task " + task
+    console.log(task);
+    console.log(type);
+    console.log(jid);
     
-    x = router.createCustomerRequest(jid, task, type);
- 
+    let z = router.createCustomerRequest(jid, task, type);
+    console.log("z:");
+    console.log(z);
     
      //SEND REQUEST USING TASK AND TYPE
     
      //userLastname = "ssss";
     // router.customer.sendrequest(task);
-    
     /*
     x can be:
     1. "You are not signed up (not in admin's contacts)" - customer havent signed up
@@ -382,7 +407,7 @@ app.get('/', (req, res)=> {
     5. "ERROR" - routing problem
     6. agents jid - there is an available agent
     */
-    res.send(x);
+    res.send(z);
  
      
  });

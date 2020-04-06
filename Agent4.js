@@ -20,11 +20,11 @@ let options = {
     },
     // Logs options
     "logs": {
-        "enableConsoleLogs": true,
+        "enableConsoleLogs": false,
         "enableFileLogs": false,
         "color": true,
         "level": 'debug',
-        "customLabel": "vincent01",
+        "customLabel": "agent4",
         "system-dev": {
             "internals": false,
             "http": false,
@@ -98,7 +98,7 @@ rainbowSDK.events.on('rainbow_onstarted', () => {
 });
 
 rainbowSDK.events.on("rainbow_onconnected",()=>{
-    rainbowSDK.presence.setPresenceTo("online");
+    
     console.log("connected");
     
 });
@@ -106,7 +106,7 @@ rainbowSDK.events.on("rainbow_onconnected",()=>{
 rainbowSDK.events.on('rainbow_onready', () => {
         
         
-    console.log("Agent 1 is online");
+    console.log("Agent 4 is online");
 
     rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
     
