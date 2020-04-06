@@ -9,6 +9,8 @@ let Rbwsdk = require("rainbow-node-sdk");
 function Router2(Rainbow){
     
     this.rbwsdk = Rainbow;
+    this.webpage = new Webpage(this);
+    this.customers = this.createCustomerList();
     this.agents = this.createAgentList();
     this.availableAgents = this.createAvailableAgentList();
     this.unAvailableAgents = this.createUnavailableAgentList();
@@ -27,7 +29,7 @@ Router2.prototype.routeRequest = function (customer){
     
     let notfound = true;
     let num = null;
-
+    
     // Checks agent availability
     if (this.availableAgents.length === 0 && this.unAvailableAgents.length === 0){
         console.log("Router: Sorry! There's no available agent that is online!");
@@ -38,7 +40,7 @@ Router2.prototype.routeRequest = function (customer){
         
         var temp =1000;
         for (let i=0; i<this.availableAgents.length; i++){
-            console.log(this.availableAgents[i].connections.length);
+            console.log(this.availableAgents[i].numOfConnections);
             if (this.availableAgents[i].task === customer.request.what && this.availableAgents[i].numOfConnections < temp){
                 temp = this.availableAgents[i].numOfConnections;
                 num = i;
@@ -67,19 +69,23 @@ Router2.prototype.routeRequest = function (customer){
             return "No Agent For Your Specific Task";
         }
 
-        if (agent!==null){
-
+        var agent = this.availableAgents[num];
+        if (num!==null){
+            
             this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
             
             if (this.availableAgents[num].numOfConnections >= 3){
-                this.availableAgents[num].status = "dnd";
+                //THIS . STATUS?
                 //TODO: set agents presence to dnd
-                rbwsdk.im.sendMessageToJid("Set to dnd",this.availableAgents[num].id);
+                this.rbwsdk.im.sendMessageToJid("Set to Busy",this.availableAgents[num].id);
+                this.unAvailableAgents.push(this.availableAgents[num]);
+                this.availableAgents.splice(num,1);
             }
             
-            return this.availableAgents[num].id;
+            return agent.id;
         }
 
+        console.log("error");
         return "ERROR";
 
     }
@@ -118,10 +124,21 @@ Router2.prototype.routeAgent = function(contact){
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
 Router2.prototype.updateAgentStatus = function(contact){
 
 
-    //from away (unavailable) to online (available)
+    //from away (unavailable) OR offline to online (available)
     if (contact.presence === "online"){
         for(let i=0; i<this.agents.length; i++){
             if(this.agents[i].id===contact.jid){
@@ -130,11 +147,13 @@ Router2.prototype.updateAgentStatus = function(contact){
         }
         for(let i=0; i<this.unAvailableAgents.length; i++){
             if(this.unAvailableAgents[i].id===contact.jid){
-                this.unAvailableAgents.splice(i,i+1)
+                this.unAvailableAgents.splice(i,1)
                 this.availableAgents.push(new Agent(contact));
                 
             }
         }
+
+
     }
 
     // from online to away
@@ -151,14 +170,16 @@ Router2.prototype.updateAgentStatus = function(contact){
                 
                 // this.availableAgents = this.availableAgents.filter(function(value, index, arr)
                 // { return value !== this.availableAgents[i]});
-                this.availableAgents.splice(i,i+1);
-                
+                this.availableAgents.splice(i,1);
                 this.unAvailableAgents.push(new Agent(contact));
                 
             }
         }
         
     }
+
+    
+
 }
 
 
@@ -167,14 +188,53 @@ Router2.prototype.addAgentLogin = function(contact){
     for(let i = 0; i<this.offlineAgents.length;i++){
         if (contact.jid===this.offlineAgents[i].id){
             
-            this.offlineAgents.splice(i,i+1);
+            this.offlineAgents.splice(i,1);
             this.availableAgents.push(new Agent(contact));
         }
     }
     
-    console.log("adding agent with id " + agent.id +  " on standby for task " + agent.task);
+    //console.log("adding agent with id " + agent.id +  " on standby for task " + agent.task);
     //console.log(this.availableAgents);
 }
+
+Router2.prototype.addAgentLogout = function(contact){
+    
+    for(let i = 0; i<this.availableAgents.length;i++){
+        if (contact.jid===this.availableAgents[i].id){
+            console.log("found online going offline");
+            this.availableAgents.splice(i,1);
+            //console.log("spliced");
+            this.offlineAgents.push(new Agent(contact));
+            //console.log("push");
+        }
+    }
+
+    for(let i = 0; i<this.unAvailableAgents.length;i++){
+        if (contact.jid===this.unAvailableAgents[i].id){
+            console.log("found away going offline");
+            this.unAvailableAgents.splice(i,1);
+            this.offlineAgents.push(new Agent(contact));
+        }
+    }
+    
+    //console.log("adding agent with id " + agent.id +  "logging out from " + agent.task);
+    //console.log(this.availableAgents);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // TODO
@@ -206,6 +266,20 @@ Router2.prototype.receiveHangUp = function(CorA){
     this.endConnection(CorA.connection);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -263,7 +337,7 @@ Router2.prototype.createUnavailableAgentList = function(){
 Router2.prototype.createOfflineAgentList = function(){
     let A = new Array();
     for(let i=0; i<this.agents.length; i++){
-        if(this.agents[i].status==="offline"){
+        if(this.agents[i].status==="offline" || this.agents[i].status==="unknown"){
             A.push(this.agents[i]);
         }
     }
