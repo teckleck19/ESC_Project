@@ -106,7 +106,7 @@ rainbowSDK.events.on("rainbow_onconnected",()=>{
 rainbowSDK.events.on('rainbow_onready', () => {
         
         
-    console.log("Agent 1 is online");
+    console.log("Agent 2 is online");
 
     rainbowSDK.events.on('rainbow_onmessagereceived', (message) => {
     
