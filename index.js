@@ -1,27 +1,7 @@
 const express = require('express')
 const app = express()
 const port = 3000 //ipadreess:port/
-app.get('/', (req, res)=> {
-   let task = req.query["task"]; //TASK A OR B OR C OR D
-   let type= req.query["type"];
-   let jid = req.query["jid"]; // text OR call By defaul lets make it text
-   console.log(task);
-   console.log(type);
-   console.log(jid);
 
-   
-    //SEND REQUEST USING TASK AND TYPE
-   
-    //userLastname = "ssss";
-   // router.customer.sendrequest(task);
-    res.send("Hello Word");
-
-    
-}
-
-);
-
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`)); 
 
 
 
@@ -379,7 +359,34 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
     
     
 }); */
-
+app.get('/', (req, res)=> {
+    let task = req.query["task"]; //TASK A OR B OR C OR D
+    let type= req.query["type"];
+    let jid = req.query["jid"]; // text OR call By defaul lets make it text
+    
+    
+    x = router.createCustomerRequest(jid, task, type);
+ 
+    
+     //SEND REQUEST USING TASK AND TYPE
+    
+     //userLastname = "ssss";
+    // router.customer.sendrequest(task);
+    
+    /*
+    x can be:
+    1. "You are not signed up (not in admin's contacts)" - customer havent signed up
+    2. "No Agent At Work" - no agent at all online busy away, all agents are offline
+    3. "No Agent for your specific task" - means there are agents (busy or away) but is not attending to that task
+    4. "Ask: Queue?" - have agent with the same task, but busy or away
+    5. "ERROR" - routing problem
+    6. agents jid - there is an available agent
+    */
+    res.send(x);
+ 
+     
+ });
+ app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`)); 
 
 
     

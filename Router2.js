@@ -27,8 +27,11 @@ function Router2(Rainbow){
 */
 Router2.prototype.routeRequest = function (customer){
     
-    let notfound = true;
-    let num = null;
+
+    
+    var notfound = true;
+    var num = null;
+    
     
     // Checks agent availability
     if (this.availableAgents.length === 0 && this.unAvailableAgents.length === 0){
@@ -238,9 +241,9 @@ Router2.prototype.addAgentLogout = function(contact){
 
 
 // TODO
-Router2.prototype.endConnection = function(contact){
+Router2.prototype.endConnection = function(jid){
     
-    for(let i = 0; i<this.connections.length; i++){
+    /* for(let i = 0; i<this.connections.length; i++){
         if (this.connections[i]===connection){
             this.connections = this.connections.filter(function(value, index, arr)
             {return value !== connection;})
@@ -256,7 +259,21 @@ Router2.prototype.endConnection = function(contact){
 
     this.availableAgents.push(connection.agent);
     this.unAvailableAgents = this.unAvailableAgents.filter(function(value, index, arr)
-    { return value !== connection.agent;});
+    { return value !== connection.agent;}); */
+    for (let i=0; i<this.availableAgents.length; i++){
+        if (jid===this.availableAgents[i].id){
+            this.availableAgents[i].numOfConnections =  this.availableAgents[i].numOfConnections - 1;
+        }
+    }
+    for (let i=0; i<this.unAvailableAgents.length; i++){
+        if (jid===this.unAvailableAgents[i].id){
+            this.unAvailableAgents[i].numOfConnections =  this.unAvailableAgents[i].numOfConnections - 1;
+            this.rbwsdk.im.sendMessageToJid("Set to Online",this.unAvailableAgents[i].id);
+            this.availableAgents.push(this.unAvailableAgents[i]);
+            this.unAvailableAgents.splice(i,1);
+            
+        }
+    }
     
 
 }
@@ -344,7 +361,22 @@ Router2.prototype.createOfflineAgentList = function(){
     return A;
 }
 
+Router2.prototype.createCustomerRequest = function(jid, task, type){
+    var customerNum = null;
+    for (let i = 0; i<this.customers.length; i++){
+        if (jid===this.customers[i].id){
 
+            customerNum = i;
 
+        }
+    }
+    if (customer===null){
+        return "You are not signed up (not in admin's contacts)"
+    }
+    else{
+        this.customers[num].createRequest(task, type);
+        this.customers[num].sendRequest();
+    }
+}
 
 module.exports = Router2;

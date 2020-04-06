@@ -28,13 +28,13 @@ u.sendRequest = function (){
     }
 }
 
-u.customerEndConnection = function(){
+/* u.customerEndConnection = function(){
     console.log("\n\ncustomer"+ this.name+" hung up");
     this.webpage.hangupButton(this);
-}
+} */
 
-u.receiveQueue = function(){
+/* u.receiveQueue = function(){
     msg = prompt("To customer with id " + this.name + ": Queue or Cancel? ");
     return msg;
-}
+} */
 module.exports = Customer;
