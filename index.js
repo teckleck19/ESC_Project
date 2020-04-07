@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
-const port = 3000 //ipadreess:port/
+const cors = require("cors");
+app.use(cors({credentials: true}));
+const port = 1334 //ieess:port/
 var startTimeout = function(timeout, i){
     setTimeout(function() {
         myAsyncFunc(i).then(function(data){
