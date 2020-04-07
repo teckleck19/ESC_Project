@@ -320,7 +320,7 @@ Router2.prototype.createAgentList = function(){
     for(let i=0; i<contacts.length; i++){
         console.log(contacts[i].name.value + "---" + contacts[i].presence);
         if(contacts[i].name.value!=="Teck Leck Ma"){
-            if(contacts[i].tags[0]==="Agent"){
+            if(typeof contacts[i].tags !== 'undefined' && contacts[i].tags[0]==="Agent"){
                 A.push(new Agent(contacts[i]));
             }
         }
@@ -333,9 +333,10 @@ Router2.prototype.createCustomerList = function(){
     var contacts = this.rbwsdk.contacts.getAll();
     
     for(let i=0; i<contacts.length; i++){
+        console.log(contacts[i].name.value);
         //console.log(this.rbwsdk.admin.getAllUsers());
         if(contacts[i].name.value!=="Teck Leck Ma"){
-            if(contacts[i].tags[0]==="Customer"){
+            if(typeof contacts[i].tags === 'undefined' || contacts[i].tags[0]!=="Agent" ){//||typeof(contacts[i].tags[0])===undefined){
                 A.push(new Customer(contacts[i],this.webpage));
             }
         }

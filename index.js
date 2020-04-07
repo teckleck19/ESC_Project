@@ -382,6 +382,8 @@ app.get("/disconnect",(req,res)=>{
     router.kickCustomer(djid);
     res.send("DISCONNECTED");
 });
+app.get('/ping' ,(req,res)=>{
+res.send("HEALTHY MACHINE")});
 app.get('/', (req, res)=> {
     let task = req.query["task"]; //TASK A OR B OR C OR D
     let type= req.query["type"];
@@ -391,7 +393,9 @@ app.get('/', (req, res)=> {
     console.log(task);
     console.log(type);
     console.log(jid);
-    
+    router.customers = router.createCustomerList();
+   console.log("CUSTOMER LISTTTT");
+console.log(router.customers);
     let z = router.createCustomerRequest(jid, task, type);
     console.log("z:");
     console.log(z);
