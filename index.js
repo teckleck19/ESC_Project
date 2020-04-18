@@ -10,7 +10,7 @@ var startTimeout = function(timeout, i){
         })
     }, timeout);
 }
-let agentStatus="test";
+let agentStatus="STARTING SDK..... REFRESH in a few seconds";
 
 
 
@@ -224,34 +224,34 @@ rainbowSDK.events.on("rainbow_onready", () => {
     // TODO ask "debug: vincent01 - XMPP/HNDL/CONV - (_onMessageReceived) with no message text, so ignore it! hasATextMessage :  false"
     //rainbowSDK.im.sendMessageToJid("Set to Busy","007b8ad5894143b89cb9e834de1695ba@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
     console.log("----Ready----");
-    agentStatus = "-----READY----- \n";
+    agentStatus = "-----READY----- <br>";
     router = new Router(rainbowSDK);
-    console.log("\n\n--online agents--");
-    agentStatus+="\n\n--online agents-- \n";
+    console.log("<br><br>--online agents--");
+    agentStatus+="<br><br>--online agents-- <br>";
     for(let i = 0; i < router.availableAgents.length; i++){
-        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"\n";
+        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"<br>";
         console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
     }
 
 
     console.log("--unavailable agents--")
-    agentStatus+="\n\n--unaivalable agents-- \n\n";
+    agentStatus+="<br><br>--unaivalable agents-- <br><br>";
     for(let i = 0; i < router.unAvailableAgents.length; i++){
-        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "\n";
+        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "<br>";
         console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
     }
 
     console.log("--offline agents--");
-    agentStatus += "\n\n--offline agents-- \n";
+    agentStatus += "<br><br>--offline agents-- <br>";
     for(let i = 0; i < router.offlineAgents.length; i++){
-        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"\n";
+        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"<br>";
         console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
     }
 
     console.log("--all agents--");
-    agentStatus+= "\n\n--ALL AGENTS-- \n";
+    agentStatus+= "<br><br>--ALL AGENTS-- <br>";
     for(let i = 0; i < router.agents.length; i++){
-        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "\n";
+        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "<br>";
 
         console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
     }
@@ -290,7 +290,7 @@ rainbowSDK.events.on("rainbow_onready", () => {
 
 rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
 
-    console.log("\n\nPresence: " + contact.tags + "---" +contact.presence);
+    console.log("<br><br>Presence: " + contact.tags + "---" +contact.presence);
     //console.log(contact);
     var x = contact;
     console.log("success");
@@ -351,33 +351,33 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
             }
             
         }
-       agentStatus = "AFTER UPDATE \n";
-        console.log("\n\n--online agents--");
-    agentStatus+="\n\n--online agents-- \n";
+       agentStatus = "AFTER UPDATE <br>";
+        console.log("<br><br>--online agents--");
+    agentStatus+="<br><br>--online agents-- <br>";
     for(let i = 0; i < router.availableAgents.length; i++){
-        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"\n";
+        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"<br>";
         console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
     }
 
 
     console.log("--unavailable agents--")
-    agentStatus+="\n\n--unaivalable agents-- \n\n";
+    agentStatus+="<br><br>--unaivalable agents-- <br><br>";
     for(let i = 0; i < router.unAvailableAgents.length; i++){
-        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "\n";
+        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "<br>";
         console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
     }
 
     console.log("--offline agents--");
-    agentStatus += "\n\n--offline agents-- \n";
+    agentStatus += "<br><br>--offline agents-- <br>";
     for(let i = 0; i < router.offlineAgents.length; i++){
-        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"\n";
+        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"<br>";
         console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
     }
 
     console.log("--all agents--");
-    agentStatus+= "\n\n--ALL AGENTS-- \n";
+    agentStatus+= "<br><br>--ALL AGENTS-- <br>";
     for(let i = 0; i < router.agents.length; i++){
-        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "\n";
+        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "<br>";
 
         console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
     }
