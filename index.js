@@ -10,7 +10,7 @@ var startTimeout = function(timeout, i){
         })
     }, timeout);
 }
-var agentStatus="test";
+let agentStatus="test";
 
 
 
@@ -224,25 +224,35 @@ rainbowSDK.events.on("rainbow_onready", () => {
     // TODO ask "debug: vincent01 - XMPP/HNDL/CONV - (_onMessageReceived) with no message text, so ignore it! hasATextMessage :  false"
     //rainbowSDK.im.sendMessageToJid("Set to Busy","007b8ad5894143b89cb9e834de1695ba@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
     console.log("----Ready----");
+    agentStatus = "-----READY----- \n";
     router = new Router(rainbowSDK);
     console.log("\n\n--online agents--");
+    agentStatus+="\n\n--online agents-- \n";
     for(let i = 0; i < router.availableAgents.length; i++){
+        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"\n";
         console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
     }
 
 
     console.log("--unavailable agents--")
+    agentStatus+="\n\n--unaivalable agents-- \n\n";
     for(let i = 0; i < router.unAvailableAgents.length; i++){
+        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "\n";
         console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
     }
 
     console.log("--offline agents--");
+    agentStatus += "\n\n--offline agents-- \n";
     for(let i = 0; i < router.offlineAgents.length; i++){
+        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"\n";
         console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
     }
 
     console.log("--all agents--");
+    agentStatus+= "\n\n--ALL AGENTS-- \n";
     for(let i = 0; i < router.agents.length; i++){
+        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "\n";
+
         console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
     }
 
@@ -341,28 +351,36 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
             }
             
         }
+       agentStatus = "AFTER UPDATE \n";
+        console.log("\n\n--online agents--");
+    agentStatus+="\n\n--online agents-- \n";
+    for(let i = 0; i < router.availableAgents.length; i++){
+        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"\n";
+        console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
+    }
 
-        console.log("\n\n---After Change---");
-        console.log("--online agents--");
-        for(let i = 0; i < router.availableAgents.length; i++){
-         agentStatus= "\n"+router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence;
-        }
 
+    console.log("--unavailable agents--")
+    agentStatus+="\n\n--unaivalable agents-- \n\n";
+    for(let i = 0; i < router.unAvailableAgents.length; i++){
+        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "\n";
+        console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
+    }
 
-        console.log("--unavailable agents--")
-        for(let i = 0; i < router.unAvailableAgents.length; i++){
-            console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
-        }
+    console.log("--offline agents--");
+    agentStatus += "\n\n--offline agents-- \n";
+    for(let i = 0; i < router.offlineAgents.length; i++){
+        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"\n";
+        console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
+    }
 
-        console.log("--offline agents--");
-        for(let i = 0; i < router.offlineAgents.length; i++){
-            console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
-        }
+    console.log("--all agents--");
+    agentStatus+= "\n\n--ALL AGENTS-- \n";
+    for(let i = 0; i < router.agents.length; i++){
+        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "\n";
 
-        console.log("--all agents--");
-        for(let i = 0; i < router.agents.length; i++){
-            console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
-        }
+        console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
+    }
 
     }
 });
@@ -375,6 +393,9 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
     
     
 }); */
+function getagentStatus(){
+    return agentStatus;
+}
 app.get("/disconnect",(req,res)=>{
     let djid = req.query["djid"];
     let daid = req.query["daid"];
@@ -383,7 +404,7 @@ app.get("/disconnect",(req,res)=>{
     res.send("DISCONNECTED");
 });
 app.get('/ping' ,(req,res)=>{
-res.send("HEALTHY MACHINE"+agentStatus)});
+res.send(getagentStatus())});
 app.get('/', (req, res)=> {
     let task = req.query["task"]; //TASK A OR B OR C OR D
     let type= req.query["type"];
