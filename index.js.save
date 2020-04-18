@@ -10,10 +10,10 @@ var startTimeout = function(timeout, i){
         })
     }, timeout);
 }
-var agentStatus="test";
 
 
 
+var agentStatus ="test";
 
 let Router = require("./Router2.js");
 let Customer = require("./Customer.js");
@@ -185,8 +185,6 @@ rainbowSDK.start().then(()=>{
     
    
     
-    
-    
 
     //rainbowSDK.im.sendMessageToJid("Hi Welcome to C03G14 company","1121e8d678d04685a4e782d8bcadbbe4@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
     //rainbowSDK.im.sendMessageToJid("Hi Welcome to C03G14 company","39e4211276844febaee596ae90f4e4f8@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
@@ -345,7 +343,7 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
         console.log("\n\n---After Change---");
         console.log("--online agents--");
         for(let i = 0; i < router.availableAgents.length; i++){
-         agentStatus= "\n"+router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence;
+            console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
         }
 
 
@@ -383,7 +381,7 @@ app.get("/disconnect",(req,res)=>{
     res.send("DISCONNECTED");
 });
 app.get('/ping' ,(req,res)=>{
-res.send("HEALTHY MACHINE"+agentStatus)});
+res.send("HEALTHY MACHINE")});
 app.get('/', (req, res)=> {
     let task = req.query["task"]; //TASK A OR B OR C OR D
     let type= req.query["type"];
