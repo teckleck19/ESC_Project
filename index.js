@@ -393,6 +393,53 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
     
     
 }); */
+  
+function logger(){
+   console.log("ALL THE ONLINE AGENTS \n");
+    for(let i = 0; i < router.availableAgents.length; i++){
+        console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"  | Number of Connections:  "+router.availableAgents[i].numOfConnections+"<br>");
+      //  console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
+    }
+
+
+    console.log("ALL THE UNAIVALBE AGENTS \n")
+    for(let i = 0; i < router.unAvailableAgents.length; i++){
+       console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + " | Number of Connections: "+router.unAvailableAgents[i].numOfConnections + "<br>");
+      //  console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
+    }
+
+  agentStatus = "New / end Connection <br>";
+        console.log("<br><br>--online agents--");
+    agentStatus+="<br><br>--online agents-- <br>";
+    for(let i = 0; i < router.availableAgents.length; i++){
+        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+ "   | Number of Active Chats =  " +router.availableAgents[i].numOfConnections+"<br>";
+        console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
+    }
+
+
+    console.log("--unavailable agents--")
+    agentStatus+="<br><br>--unaivalable agents-- <br><br>";
+    for(let i = 0; i < router.unAvailableAgents.length; i++){
+        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "   | Number of Active Chats =  " +router.unAvailableAgents[i].numOfConnections+ "<br>";
+        console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
+    }
+
+    console.log("--offline agents--");
+    agentStatus += "<br><br>--offline agents-- <br>";
+    for(let i = 0; i < router.offlineAgents.length; i++){
+        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"<br>";
+        console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
+    }
+
+    console.log("--all agents--");
+    agentStatus+= "<br><br>--ALL AGENTS-- <br>";
+    for(let i = 0; i < router.agents.length; i++){
+        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "<br>";
+
+        console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
+    }
+
+    }
 function getagentStatus(){
     return agentStatus;
 }
@@ -402,6 +449,7 @@ app.get("/disconnect",(req,res)=>{
     console.log("xxxxxxx");
     router.kickCustomer(djid);
     router.endConnection(daid);
+logger();
     res.send("DISCONNECTED");
 });
 app.get('/ping' ,(req,res)=>{
@@ -421,7 +469,7 @@ console.log(router.customers);
     let z = router.createCustomerRequest(jid, task, type);
     console.log("z:");
     console.log(z);
-    
+    logger();
      //SEND REQUEST USING TASK AND TYPE
     
      //userLastname = "ssss";
