@@ -377,7 +377,7 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
     console.log("--all agents--");
     agentStatus+= "<br><br>--ALL AGENTS-- <br>";
     for(let i = 0; i < router.agents.length; i++){
-        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "<br>";
+        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence +"   | Number of Active Chats =  " +router.agents[i].numOfConnections+ "<br>";
 
         console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
     }
@@ -401,6 +401,7 @@ app.get("/disconnect",(req,res)=>{
     let daid = req.query["daid"];
     console.log("xxxxxxx");
     router.kickCustomer(djid);
+    router.endConnection(daid);
     res.send("DISCONNECTED");
 });
 app.get('/ping' ,(req,res)=>{
