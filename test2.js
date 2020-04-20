@@ -145,54 +145,22 @@ rainbowSDK.events.on("rainbow_onready", () => {
     console.log("we have 20 number of customers, check: ", router.customers.length);
     //2a, 1b, 2c, 1d, 6 agents:
     var chat = "chat";
+    router.customers[0].createRequest("Task A", chat);
+    router.customers[1].createRequest("Task B", chat);
+    router.customers[2].createRequest("Task C", chat);
+    router.customers[3].createRequest("Task D", chat);
     for (let i = 0; i < 20; i++) {
-        router.customers[0].createRequest("Task A", chat);
-        console.log(router.customers[0] + " creates request for task A successfully");
-    } 
-    for (let i = 6; i < 20; i++) {
-        router.customers[1].createRequest("Task B", chat);
-        console.log(router.customers[1] + " creates request for task B successfully");
+        router.customers[0].sendRequest();
+        console.log(router.customers[0].name + " sends request for task A for the " + i+1+ "th time.");
+        router.customers[1].sendRequest();
+        console.log(router.customers[1].name + " sends request for task B for the " + i+1 + "th time.");
+        router.customers[2].sendRequest();
+        console.log(router.customers[2].name + " sends request for task C for the " + i+1 + "th time.");
+        router.customers[3].sendRequest();
+        console.log(router.customers[3].name + " sends request for task D for the " + i+1 + "th time.");
     }
-    for (let i = 9; i < 15; i++) {
-        router.customers[2].createRequest("Task C", chat);
-        console.log(router.customers[2] + " creates request for task C successfully");
-    }
-    for (let i = 15; i < 18; i++) {
-        router.customers[i].createRequest("Task D", chat);
-        console.log(router.customers[3] + " creates request for task D successfully");
-    }
-    
-    //check queueCustomer ID is in the queueCustomer list
-    router.customers[18].createRequest("Task A", chat);
-    router.customers[19].createRequest("Task B", chat);
+    console.log("spam complete.");
 
-    // variable to count success routed, queued routed, failed routed
-    var numFail = 0;
-    var numSuccess = 0;
-    var numQueue = 0;
-    var numNoTask = 0;
-    //we want to sendRequest and check return statements to see our successes (or failures)
-    for (let i = 0; i < 20; i++) {
-        //console.log(router.customers[i].sendRequest());
-        switch (router.customers[i].sendRequest()) {
-            case 'No Agent For Your Specific Task':
-                numNoTask++; 
-                break;
-            case 'PleaseQueue':
-                numQueue++;
-                break;
-            case "ERROR":
-                numFail++;
-                break;
-            case "Found An Agent":
-                console.log("found agent");
-                numSuccess++;
-                break;
-            default:
-                break;
-        }        
-        console.log("numSuccess: " + numSuccess + ". numQueue: " + numQueue +". numNoTask: "+ numNoTask + ". numFail: " + numFail );
-    }
 });
 
 rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {

@@ -4,7 +4,7 @@
   "description": "esc-project",
   "main": "index.js",
   "scripts": {
-    "test": "concurrently \"node Agent1.js\" \"node Agent2.js\" \"node Agent3.js\" \"node Agent4.js\" \"node Agent5.js\" \"node test.js\"",
+    "test": "concurrently \"node Agent1.js\" \"node Agent2.js\" \"node Agent3.js\" \"node Agent4.js\" \"node Agent5.js\" \"node test2.js\"",
     "start": "concurrently \"node Agent1.js\" \"node Agent2.js\" \"node Agent3.js\" \"node Agent4.js\" \"node Agent5.js\" \"node index.js\""
   },
   "author": "",
