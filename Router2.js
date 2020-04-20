@@ -61,9 +61,9 @@ Router2.prototype.routeRequest = function (customer){
             //console.log(this.unAvailableAgents);
             for (let i=0; i<this.unAvailableAgents.length; i++){
                 if (this.unAvailableAgents[i].task === customer.request.what){
-                    console.log("Ask: Queue?");
+                    console.log("PleaseQueue");
                     this.queueCustomer(customer);
-                    return "Ask: Queue?";
+                    return "PleaseQueue";
                 
                 }
             }
@@ -77,18 +77,22 @@ Router2.prototype.routeRequest = function (customer){
         var agent = this.availableAgents[num];
         if (num!==null){
             
-            this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
             
-            if (this.availableAgents[num].numOfConnections >= 3){
+       this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
+                let temporary= this.availableAgents[num].id;
+
+            console.log("Found An Agent");
+ 
+           if (this.availableAgents[num].numOfConnections >= 3){
                 //THIS . STATUS?
                 //TODO: set agents presence to dnd
                 this.rbwsdk.im.sendMessageToJid("Set to Busy",this.availableAgents[num].id);
                 this.unAvailableAgents.push(this.availableAgents[num]);
                 this.availableAgents.splice(num,1);
             }
-            console.log("Found An Agent");
-            return this.availableAgents[num].id;
-        }
+   return temporary;
+
+      }
 
         console.log("error");
         return "ERROR";
@@ -102,21 +106,47 @@ Router2.prototype.routeRequest = function (customer){
  * @param contact
  * @returns agent, customer
  */
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+function httpGetAsync(theUrl, callback)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatnomechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
 Router2.prototype.routeAgent = function(contact){
 
-    
+    var num = null
     var agent = null;
-    for(let i=0; i<this.availableAgents; i++){
+    for(let i=0; i<this.availableAgents.length; i++){
         if (contact.jid === this.availableAgents[i].id){
-            agent = this.availableAgents[i].id;
+            agent = this.availableAgents[i];
+            num = i;
         }
-    }
-    for(let i=0; i<this.queueCustomer; i++){
-        if (this.queuedCustomer[i].request.what===agent.task){
-            
+    }console.log("QUEEUEDD CUSOTMERS");
+console.log(this.queuedCustomers);
+console.log("IN THE ROUTE AGENT");
+    for(let i=0; i<this.queuedCustomers.length; i++){
+        if (this.queuedCustomers[i].request.what===agent.task){
+            this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
+            if (this.availableAgents[num].numOfConnections >= 3){
+                
+                //TODO: set agents presence to dnd
+                this.rbwsdk.im.sendMessageToJid("Set to Busy",this.availableAgents[num].id);
+                this.unAvailableAgents.push(this.availableAgents[num]);
+                this.availableAgents.splice(num,1);
+            }
+            this.rbwsdk.im.sendMessageToJid("Hey you can message now! Happy to assist you.",this.queuedCustomers[i].id);
+            this.kickCustomer(this.queuedCustomers[i].id);
+            httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomers[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
+            console.log("UPDATINGGGGGGGGG");         
+            break;            
 
             //TODO: send to rahuls server
-            return agent.id + " " + this.queuedCustomer[i].id;
+        //    return agent.id + " " + this.queuedCustomer[i].id;
         }
     }
 }
@@ -162,8 +192,9 @@ Router2.prototype.updateAgentStatus = function(contact){
         }
         for(let i=0; i<this.unAvailableAgents.length; i++){
             if(this.unAvailableAgents[i].id===contact.jid){
-                this.unAvailableAgents.splice(i,1)
-                this.availableAgents.push(new Agent(contact));
+                this.availableAgents.push(this.unAvailableAgents[i]);
+                this.unAvailableAgents.splice(i,1);
+
                 
             }
         }
@@ -281,8 +312,8 @@ Router2.prototype.endConnection = function(jid){
         if (jid===this.unAvailableAgents[i].id){
             this.unAvailableAgents[i].numOfConnections =  this.unAvailableAgents[i].numOfConnections - 1;
             this.rbwsdk.im.sendMessageToJid("Set to Online",this.unAvailableAgents[i].id);
-            this.availableAgents.push(this.unAvailableAgents[i]);
-            this.unAvailableAgents.splice(i,1);
+            //this.availableAgents.push(this.unAvailableAgents[i]);
+            //this.unAvailableAgents.splice(i,1);
             
         }
     }
@@ -320,7 +351,7 @@ Router2.prototype.createAgentList = function(){
     for(let i=0; i<contacts.length; i++){
         console.log(contacts[i].name.value + "---" + contacts[i].presence);
         if(contacts[i].name.value!=="Teck Leck Ma"){
-            if(contacts[i].tags[0]==="Agent"){
+            if(typeof contacts[i].tags !== 'undefined' && contacts[i].tags[0]==="Agent"){
                 A.push(new Agent(contacts[i]));
             }
         }
@@ -333,9 +364,10 @@ Router2.prototype.createCustomerList = function(){
     var contacts = this.rbwsdk.contacts.getAll();
     
     for(let i=0; i<contacts.length; i++){
+        console.log(contacts[i].name.value);
         //console.log(this.rbwsdk.admin.getAllUsers());
         if(contacts[i].name.value!=="Teck Leck Ma"){
-            if(contacts[i].tags[0]==="Customer"){
+            if(typeof contacts[i].tags === 'undefined' || contacts[i].tags[0]!=="Agent" ){//||typeof(contacts[i].tags[0])===undefined){
                 A.push(new Customer(contacts[i],this.webpage));
             }
         }

@@ -10,10 +10,10 @@ var startTimeout = function(timeout, i){
         })
     }, timeout);
 }
-let agentStatus="STARTING SDK..... REFRESH in a few seconds";
 
 
 
+var agentStatus ="test";
 
 let Router = require("./Router2.js");
 let Customer = require("./Customer.js");
@@ -185,8 +185,6 @@ rainbowSDK.start().then(()=>{
     
    
     
-    
-    
 
     //rainbowSDK.im.sendMessageToJid("Hi Welcome to C03G14 company","1121e8d678d04685a4e782d8bcadbbe4@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
     //rainbowSDK.im.sendMessageToJid("Hi Welcome to C03G14 company","39e4211276844febaee596ae90f4e4f8@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
@@ -224,35 +222,25 @@ rainbowSDK.events.on("rainbow_onready", () => {
     // TODO ask "debug: vincent01 - XMPP/HNDL/CONV - (_onMessageReceived) with no message text, so ignore it! hasATextMessage :  false"
     //rainbowSDK.im.sendMessageToJid("Set to Busy","007b8ad5894143b89cb9e834de1695ba@sandbox-all-in-one-rbx-prod-1.rainbow.sbg");
     console.log("----Ready----");
-    agentStatus = "-----READY----- <br>";
     router = new Router(rainbowSDK);
-    console.log("<br><br>--online agents--");
-    agentStatus+="<br><br>--online agents-- <br>";
+    console.log("\n\n--online agents--");
     for(let i = 0; i < router.availableAgents.length; i++){
-        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"  | Number of Connections:  "+router.availableAgents[i].numOfConnections+"<br>";
         console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
     }
 
 
     console.log("--unavailable agents--")
-    agentStatus+="<br><br>--unaivalable agents-- <br><br>";
     for(let i = 0; i < router.unAvailableAgents.length; i++){
-        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + " | Number of Connections: "+router.unAvailableAgents[i].numOfConnections + "<br>";
         console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
     }
 
     console.log("--offline agents--");
-    agentStatus += "<br><br>--offline agents-- <br>";
     for(let i = 0; i < router.offlineAgents.length; i++){
-        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"<br>";
         console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
     }
 
     console.log("--all agents--");
-    agentStatus+= "<br><br>--ALL AGENTS-- <br>";
     for(let i = 0; i < router.agents.length; i++){
-        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "<br>";
-
         console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
     }
 
@@ -290,7 +278,7 @@ rainbowSDK.events.on("rainbow_onready", () => {
 
 rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
 
-    console.log("<br><br>Presence: " + contact.tags + "---" +contact.presence);
+    console.log("\n\nPresence: " + contact.tags + "---" +contact.presence);
     //console.log(contact);
     var x = contact;
     console.log("success");
@@ -304,16 +292,14 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
                 //console.log();
                 //console.log(router.offlineAgents);
                 //console.log(router.availableAgents);
-                console.log("Some lad just came online");
+                
                 //check if it just log-ed in or come back from away
                 for(let i=0; i<router.unAvailableAgents.length; i++){
 
                     //if from away
                     if (x.jid === router.unAvailableAgents[i].id){
                         router.updateAgentStatus(x);
-			console.log("found one");
                         router.routeAgent(x);
-
                     }
                     
                     
@@ -353,36 +339,28 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
             }
             
         }
-       agentStatus = "AFTER UPDATE <br>";
-        console.log("<br><br>--online agents--");
-    agentStatus+="<br><br>--online agents-- <br>";
-    for(let i = 0; i < router.availableAgents.length; i++){
-        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+ "   | Number of Active Chats =  " +router.availableAgents[i].numOfConnections+"<br>";
-        console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
-    }
+
+        console.log("\n\n---After Change---");
+        console.log("--online agents--");
+        for(let i = 0; i < router.availableAgents.length; i++){
+            console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
+        }
 
 
-    console.log("--unavailable agents--")
-    agentStatus+="<br><br>--unaivalable agents-- <br><br>";
-    for(let i = 0; i < router.unAvailableAgents.length; i++){
-        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "   | Number of Active Chats =  " +router.unAvailableAgents[i].numOfConnections+ "<br>";
-        console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
-    }
+        console.log("--unavailable agents--")
+        for(let i = 0; i < router.unAvailableAgents.length; i++){
+            console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
+        }
 
-    console.log("--offline agents--");
-    agentStatus += "<br><br>--offline agents-- <br>";
-    for(let i = 0; i < router.offlineAgents.length; i++){
-        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"<br>";
-        console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
-    }
+        console.log("--offline agents--");
+        for(let i = 0; i < router.offlineAgents.length; i++){
+            console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
+        }
 
-    console.log("--all agents--");
-    agentStatus+= "<br><br>--ALL AGENTS-- <br>";
-    for(let i = 0; i < router.agents.length; i++){
-        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "<br>";
-
-        console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
-    }
+        console.log("--all agents--");
+        for(let i = 0; i < router.agents.length; i++){
+            console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
+        }
 
     }
 });
@@ -395,67 +373,15 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
     
     
 }); */
-  
-function logger(){
-   console.log("ALL THE ONLINE AGENTS \n");
-    for(let i = 0; i < router.availableAgents.length; i++){
-        console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+"  | Number of Connections:  "+router.availableAgents[i].numOfConnections+"<br>");
-      //  console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
-    }
-
-
-    console.log("ALL THE UNAIVALBE AGENTS \n")
-    for(let i = 0; i < router.unAvailableAgents.length; i++){
-       console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + " | Number of Connections: "+router.unAvailableAgents[i].numOfConnections + "<br>");
-      //  console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
-    }
-
-  agentStatus = "New / end Connection <br>";
-        console.log("<br><br>--online agents--");
-    agentStatus+="<br><br>--online agents-- <br>";
-    for(let i = 0; i < router.availableAgents.length; i++){
-        agentStatus +=router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence+ "   | Number of Active Chats =  " +router.availableAgents[i].numOfConnections+"<br>";
-        console.log(router.availableAgents[i].name + "-----" + router.availableAgents[i].contact.presence);
-    }
-
-
-    console.log("--unavailable agents--")
-    agentStatus+="<br><br>--unaivalable agents-- <br><br>";
-    for(let i = 0; i < router.unAvailableAgents.length; i++){
-        agentStatus+= router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence + "   | Number of Active Chats =  " +router.unAvailableAgents[i].numOfConnections+ "<br>";
-        console.log(router.unAvailableAgents[i].name + "-----" + router.unAvailableAgents[i].contact.presence);
-    }
-
-    console.log("--offline agents--");
-    agentStatus += "<br><br>--offline agents-- <br>";
-    for(let i = 0; i < router.offlineAgents.length; i++){
-        agentStatus += router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence +"<br>";
-        console.log(router.offlineAgents[i].name + "-----" + router.offlineAgents[i].contact.presence);
-    }
-
-    console.log("--all agents--");
-    agentStatus+= "<br><br>--ALL AGENTS-- <br>";
-    for(let i = 0; i < router.agents.length; i++){
-        agentStatus += router.agents[i].name + "-----" + router.agents[i].contact.presence + "<br>";
-
-        console.log(router.agents[i].name + "-----" + router.agents[i].contact.presence);
-    }
-
-    }
-function getagentStatus(){
-    return agentStatus;
-}
 app.get("/disconnect",(req,res)=>{
     let djid = req.query["djid"];
     let daid = req.query["daid"];
     console.log("xxxxxxx");
-    //router.kickCustomer(djid);
-    router.endConnection(daid);
-logger();
+    router.kickCustomer(djid);
     res.send("DISCONNECTED");
 });
 app.get('/ping' ,(req,res)=>{
-res.send(getagentStatus())});
+res.send("HEALTHY MACHINE")});
 app.get('/', (req, res)=> {
     let task = req.query["task"]; //TASK A OR B OR C OR D
     let type= req.query["type"];
@@ -471,7 +397,7 @@ console.log(router.customers);
     let z = router.createCustomerRequest(jid, task, type);
     console.log("z:");
     console.log(z);
-    logger();
+    
      //SEND REQUEST USING TASK AND TYPE
     
      //userLastname = "ssss";
