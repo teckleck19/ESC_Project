@@ -169,8 +169,9 @@ rainbowSDK.events.on("rainbow_onready", () => {
     }
 
     //set customers
-    console.log("we have {0} number of customers.", router.customers.length);
+    console.log("we have 20 number of customers, check: ", router.customers.length);
     //2a, 1b, 2c, 1d, 6 agents:
+    var chat = "chat";
     for (let i = 0; i < 6; i++) {
         router.customers[i].createRequest("Task A", chat);
         console.log("customer" + i + " creates request for task A successfully");
@@ -200,7 +201,7 @@ rainbowSDK.events.on("rainbow_onready", () => {
 
     //we want to sendRequest and check return statements to see our successes (or failures)
     for (let i = 0; i < 20; i++) {
-        switch (router.customer[i].sendRequest()) {
+        switch (router.customers[i].sendRequest()) {
             case "No Agent At Work":
                 numFail++;
                 break;
