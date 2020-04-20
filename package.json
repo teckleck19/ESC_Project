@@ -4,7 +4,7 @@
   "description": "esc-project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "concurrently \"node Agent1.js\" \"node Agent2.js\" \"node Agent3.js\" \"node Agent4.js\" \"node Agent5.js\" \"node test.js\"",
     "start": "concurrently \"node Agent1.js\" \"node Agent2.js\" \"node Agent3.js\" \"node Agent4.js\" \"node Agent5.js\" \"node index.js\""
   },
   "author": "",
