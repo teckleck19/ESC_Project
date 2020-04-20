@@ -119,21 +119,31 @@ function httpGetAsync(theUrl, callback)
 }
 Router2.prototype.routeAgent = function(contact){
 
-    
+    var num = null
     var agent = null;
     for(let i=0; i<this.availableAgents.length; i++){
         if (contact.jid === this.availableAgents[i].id){
             agent = this.availableAgents[i];
+            num = i;
         }
     }console.log("QUEEUEDD CUSOTMERS");
 console.log(this.queuedCustomers);
 console.log("IN THE ROUTE AGENT");
     for(let i=0; i<this.queuedCustomers.length; i++){
         if (this.queuedCustomers[i].request.what===agent.task){
-this.rbwsdk.im.sendMessageToJid("Hey you can message now! Happy to assist you.",this.queuedCustomers[i].id);
-	   httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomers[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
-console.log("UPDATINGGGGGGGGG");         
-break;            
+            this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
+            if (this.availableAgents[num].numOfConnections >= 3){
+                
+                //TODO: set agents presence to dnd
+                this.rbwsdk.im.sendMessageToJid("Set to Busy",this.availableAgents[num].id);
+                this.unAvailableAgents.push(this.availableAgents[num]);
+                this.availableAgents.splice(num,1);
+            }
+            this.rbwsdk.im.sendMessageToJid("Hey you can message now! Happy to assist you.",this.queuedCustomers[i].id);
+            this.kickCustomer(this.queuedCustomers[i].id);
+            httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomers[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
+            console.log("UPDATINGGGGGGGGG");         
+            break;            
 
             //TODO: send to rahuls server
         //    return agent.id + " " + this.queuedCustomer[i].id;

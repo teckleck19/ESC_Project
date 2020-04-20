@@ -449,7 +449,7 @@ app.get("/disconnect",(req,res)=>{
     let djid = req.query["djid"];
     let daid = req.query["daid"];
     console.log("xxxxxxx");
-    router.kickCustomer(djid);
+    //router.kickCustomer(djid);
     router.endConnection(daid);
 logger();
     res.send("DISCONNECTED");
