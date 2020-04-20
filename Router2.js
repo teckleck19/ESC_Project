@@ -61,9 +61,9 @@ Router2.prototype.routeRequest = function (customer){
             //console.log(this.unAvailableAgents);
             for (let i=0; i<this.unAvailableAgents.length; i++){
                 if (this.unAvailableAgents[i].task === customer.request.what){
-                    console.log("Ask: Queue?");
+                    console.log("PleaseQueue");
                     this.queueCustomer(customer);
-                    return "Ask: Queue?";
+                    return "PleaseQueue";
                 
                 }
             }
@@ -77,18 +77,22 @@ Router2.prototype.routeRequest = function (customer){
         var agent = this.availableAgents[num];
         if (num!==null){
             
-            this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
             
-            if (this.availableAgents[num].numOfConnections >= 3){
+       this.availableAgents[num].numOfConnections = this.availableAgents[num].numOfConnections + 1;
+                let temporary= this.availableAgents[num].id;
+
+            console.log("Found An Agent");
+ 
+           if (this.availableAgents[num].numOfConnections >= 3){
                 //THIS . STATUS?
                 //TODO: set agents presence to dnd
                 this.rbwsdk.im.sendMessageToJid("Set to Busy",this.availableAgents[num].id);
                 this.unAvailableAgents.push(this.availableAgents[num]);
                 this.availableAgents.splice(num,1);
             }
-            console.log("Found An Agent");
-            return this.availableAgents[num].id;
-        }
+   return temporary;
+
+      }
 
         console.log("error");
         return "ERROR";
@@ -102,6 +106,17 @@ Router2.prototype.routeRequest = function (customer){
  * @param contact
  * @returns agent, customer
  */
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+function httpGetAsync(theUrl, callback)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatnomechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
 Router2.prototype.routeAgent = function(contact){
 
     
@@ -113,10 +128,12 @@ Router2.prototype.routeAgent = function(contact){
     }
     for(let i=0; i<this.queueCustomer; i++){
         if (this.queuedCustomer[i].request.what===agent.task){
-            
+//this.rbwsdk.im.sendMessageToJid("JID:"+this.queuedCustomer[i].id, agent.id);
+	   httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomer[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
+         break;            
 
             //TODO: send to rahuls server
-            return agent.id + " " + this.queuedCustomer[i].id;
+        //    return agent.id + " " + this.queuedCustomer[i].id;
         }
     }
 }
