@@ -121,15 +121,17 @@ Router2.prototype.routeAgent = function(contact){
 
     
     var agent = null;
-    for(let i=0; i<this.availableAgents; i++){
+    for(let i=0; i<this.availableAgents.length; i++){
         if (contact.jid === this.availableAgents[i].id){
-            agent = this.availableAgents[i].id;
+            agent = this.availableAgents[i];
         }
-    }
-    for(let i=0; i<this.queueCustomer; i++){
-        if (this.queuedCustomer[i].request.what===agent.task){
-this.rbwsdk.im.sendMessageToJid("Hey you can message now! Happy to assist you.",this.queuedCustomer[i].id);
-	   httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomer[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
+    }console.log("QUEEUEDD CUSOTMERS");
+console.log(this.queuedCustomers);
+console.log("IN THE ROUTE AGENT");
+    for(let i=0; i<this.queuedCustomers.length; i++){
+        if (this.queuedCustomers[i].request.what===agent.task){
+this.rbwsdk.im.sendMessageToJid("Hey you can message now! Happy to assist you.",this.queuedCustomers[i].id);
+	   httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomers[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
 console.log("UPDATINGGGGGGGGG");         
 break;            
 
@@ -180,8 +182,9 @@ Router2.prototype.updateAgentStatus = function(contact){
         }
         for(let i=0; i<this.unAvailableAgents.length; i++){
             if(this.unAvailableAgents[i].id===contact.jid){
-                this.unAvailableAgents.splice(i,1)
-                this.availableAgents.push(new Agent(contact));
+                this.availableAgents.push(this.unAvailableAgents[i]);
+                this.unAvailableAgents.splice(i,1);
+
                 
             }
         }
@@ -299,8 +302,8 @@ Router2.prototype.endConnection = function(jid){
         if (jid===this.unAvailableAgents[i].id){
             this.unAvailableAgents[i].numOfConnections =  this.unAvailableAgents[i].numOfConnections - 1;
             this.rbwsdk.im.sendMessageToJid("Set to Online",this.unAvailableAgents[i].id);
-            this.availableAgents.push(this.unAvailableAgents[i]);
-            this.unAvailableAgents.splice(i,1);
+            //this.availableAgents.push(this.unAvailableAgents[i]);
+            //this.unAvailableAgents.splice(i,1);
             
         }
     }

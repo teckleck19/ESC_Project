@@ -304,14 +304,16 @@ rainbowSDK.events.on("rainbow_oncontactpresencechanged", (contact) => {
                 //console.log();
                 //console.log(router.offlineAgents);
                 //console.log(router.availableAgents);
-                
+                console.log("Some lad just came online");
                 //check if it just log-ed in or come back from away
                 for(let i=0; i<router.unAvailableAgents.length; i++){
 
                     //if from away
                     if (x.jid === router.unAvailableAgents[i].id){
                         router.updateAgentStatus(x);
+			console.log("found one");
                         router.routeAgent(x);
+
                     }
                     
                     
