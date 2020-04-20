@@ -119,7 +119,7 @@ function httpGetAsync(theUrl, callback)
 }
 Router2.prototype.routeAgent = function(contact){
 
-    var num = null
+    var num = null;
     var agent = null;
     for(let i=0; i<this.availableAgents.length; i++){
         if (contact.jid === this.availableAgents[i].id){
@@ -139,9 +139,9 @@ console.log("IN THE ROUTE AGENT");
                 this.unAvailableAgents.push(this.availableAgents[num]);
                 this.availableAgents.splice(num,1);
             }
-            this.rbwsdk.im.sendMessageToJid("Hey you can message now! Happy to assist you.",this.queuedCustomers[i].id);
+            this.rbwsdk.im.sendMessageToJid(agent.id,this.queuedCustomers[i].id);
             this.kickCustomer(this.queuedCustomers[i].id);
-            httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomers[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
+           // httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomers[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
             console.log("UPDATINGGGGGGGGG");         
             break;            
 
