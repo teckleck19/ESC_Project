@@ -115,33 +115,6 @@ rainbowSDK.start().then(()=>{
 rainbowSDK.events.on("rainbow_onready", () => {
     console.log("----Ready----");
     router = new Router(rainbowSDK);
-
-    /* router.customers[0].createRequest("Task A","call");
-    router.customers[1].createRequest("Task A","call");
-    router.customers[2].createRequest("Task A","call");
-    router.customers[3].createRequest("Task B","call");
-    router.customers[4].createRequest("Task A","call");
-    router.customers[5].createRequest("Task A","call");
-    router.customers[6].createRequest("Task B","call");
-    router.customers[7].createRequest("Task B","call");
-
-    router.customers[0].sendRequest();
-    router.customers[1].sendRequest();
-    router.customers[2].sendRequest();
-    router.customers[3].sendRequest();
-    router.customers[4].sendRequest();
-    router.customers[5].sendRequest();
-    router.customers[6].sendRequest();
-    router.customers[7].sendRequest(); */
-    
-
-    
-    //console.log(router.availableAgents);
-    //console.log(router.unAvailableAgents);
-    /* for (let i=0; i<router.customers.length;i++){
-        console.log(router.customers[i].name + "---" + router.customers[i].id);
-    } */
-
     
     console.log("\n\n--online agents--");
     for(let i = 0; i < router.availableAgents.length; i++){
@@ -172,24 +145,23 @@ rainbowSDK.events.on("rainbow_onready", () => {
     console.log("we have 20 number of customers, check: ", router.customers.length);
     //2a, 1b, 2c, 1d, 6 agents:
     var chat = "chat";
-    for (let i = 0; i < 6; i++) {
-        router.customers[i].createRequest("Task A", chat);
-        console.log("customer: " + i + " creates request for task A successfully");
+    for (let i = 0; i < 20; i++) {
+        router.customers[0].createRequest("Task A", chat);
+        console.log(router.customers[0] + " creates request for task A successfully");
     } 
-    for (let i = 6; i < 9; i++) {
-        router.customers[i].createRequest("Task B", chat);
-        console.log("customer: " + i + " creates request for task B successfully");
+    for (let i = 6; i < 20; i++) {
+        router.customers[1].createRequest("Task B", chat);
+        console.log(router.customers[1] + " creates request for task B successfully");
     }
     for (let i = 9; i < 15; i++) {
-        router.customers[i].createRequest("Task C", chat);
-        console.log("customer: " + i + " creates request for task C successfully");
+        router.customers[2].createRequest("Task C", chat);
+        console.log(router.customers[2] + " creates request for task C successfully");
     }
     for (let i = 15; i < 18; i++) {
         router.customers[i].createRequest("Task D", chat);
-        console.log("customer: " + i + " creates request for task D successfully");
+        console.log(router.customers[3] + " creates request for task D successfully");
     }
-    console.log("above we set customers0-17 requests, now let's set overflow customer requests...");
-
+    
     //check queueCustomer ID is in the queueCustomer list
     router.customers[18].createRequest("Task A", chat);
     router.customers[19].createRequest("Task B", chat);

@@ -19,7 +19,7 @@ u.createRequest = function(what,how){
 }
 
 u.sendRequest = function (){
-    console.log("\n\ncustomer"+ this.name+" is sending Request");
+    console.log("\n\n" + this.name+ " is sending Request");
     if (this.request !== null){
         return this.webpage.sendRequest(this);
     }
