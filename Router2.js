@@ -128,9 +128,10 @@ Router2.prototype.routeAgent = function(contact){
     }
     for(let i=0; i<this.queueCustomer; i++){
         if (this.queuedCustomer[i].request.what===agent.task){
-//this.rbwsdk.im.sendMessageToJid("JID:"+this.queuedCustomer[i].id, agent.id);
+this.rbwsdk.im.sendMessageToJid("Hey you can message now! Happy to assist you.",this.queuedCustomer[i].id);
 	   httpGetAsync("http://ec2-18-223-16-89.us-east-2.compute.amazonaws.com:3002/updatejid?cid="+this.queuedCustomer[i].id+"&aid="+agent.id,(res)=>{console.log(res)});
-         break;            
+console.log("UPDATINGGGGGGGGG");         
+break;            
 
             //TODO: send to rahuls server
         //    return agent.id + " " + this.queuedCustomer[i].id;
